@@ -1,9 +1,9 @@
 /* Canvas workspace, contextual events and identity art. */
 'use strict';
 const identityAtlas=new Image();identityAtlas.src='assets/identity-avatars-b.png';identityAtlas.onload=()=>drawAll();
-const agenticIdentity=new Image();agenticIdentity.src='assets/identity-agentic-ash.png';agenticIdentity.onload=()=>drawAll();
+const agenticIdentity=new Image();agenticIdentity.src='assets/identity-agentic-v2.png';agenticIdentity.onload=()=>drawAll();
 function identityReady(id){const image=id===3?agenticIdentity:identityAtlas;return image.complete&&image.naturalWidth>0;}
-TITLES.forEach((t,i)=>{t.avatar=i;t.avatarLabel=i===3?'小智与皮卡丘':t.name+'专属形象';});
+TITLES.forEach((t,i)=>{t.avatar=i;t.avatarLabel=i===3?'智能体召唤师专属形象':t.name+'专属形象';});
 CASES.coffee.observations[2].text='“一口保研！喝了就不用学习，直接上岸。”';
 CASES.coffee.observations[3].text='“杯子改火箭，Logo换隔壁奶茶，先出圈再说。”';
 CASES.headphones.observations[2].text='“给耳机加读心功能，再承诺戴上就能拿奖学金。”';
@@ -89,7 +89,7 @@ let nodeDrag=null;
 document.addEventListener('pointerdown',e=>{const handle=e.target.closest('[data-node-handle]');if(!handle||!temp.mode||temp.mode!=='automation')return;ensureCanvas();const id=handle.dataset.nodeHandle;nodeDrag={id,x:e.clientX,y:e.clientY,p:[...temp.positions[id]]};e.preventDefault();});
 document.addEventListener('pointermove',e=>{if(!nodeDrag)return;const id=nodeDrag.id;temp.positions[id]=[clamp(nodeDrag.p[0]+(e.clientX-nodeDrag.x)/temp.zoom,0,770),clamp(nodeDrag.p[1]+(e.clientY-nodeDrag.y)/temp.zoom,0,420)];const node=document.querySelector('[data-node="'+id+'"]');if(node){node.style.left=temp.positions[id][0]+'px';node.style.top=temp.positions[id][1]+'px';}const svg=document.querySelector('.board-wires');if(svg)svg.innerHTML=wireMarkup();});
 document.addEventListener('pointerup',()=>{nodeDrag=null;});document.addEventListener('pointercancel',()=>{nodeDrag=null;});
-function drawIdentity(ctx,id,w,h){ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,w,h);if(!identityReady(id))return;if(id===3){const low=document.createElement('canvas'),lw=64,lh=96;low.width=lw;low.height=lh;const lctx=low.getContext('2d');lctx.imageSmoothingEnabled=false;lctx.fillStyle='#081a37';lctx.fillRect(0,0,lw,lh);const scale=Math.min(lw/agenticIdentity.naturalWidth,lh/agenticIdentity.naturalHeight),dw=agenticIdentity.naturalWidth*scale,dh=agenticIdentity.naturalHeight*scale;lctx.drawImage(agenticIdentity,0,0,agenticIdentity.naturalWidth,agenticIdentity.naturalHeight,(lw-dw)/2,(lh-dh)/2,dw,dh);const bx=48,by=70;lctx.fillStyle='#e64d45';lctx.fillRect(bx-4,by-3,9,5);lctx.fillStyle='#f5f0df';lctx.fillRect(bx-4,by+2,9,5);lctx.fillStyle='#121a2b';lctx.fillRect(bx-5,by+1,11,2);lctx.fillRect(bx-1,by-1,3,3);ctx.imageSmoothingEnabled=false;ctx.drawImage(low,0,0,lw,lh,0,0,w,h);return;}const cellW=identityAtlas.naturalWidth/3,cellH=identityAtlas.naturalHeight/3;ctx.drawImage(identityAtlas,(id%3)*cellW,Math.floor(id/3)*cellH,cellW,cellH,0,0,w,h);}
+function drawIdentity(ctx,id,w,h){ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,w,h);if(!identityReady(id))return;if(id===3){const low=document.createElement('canvas'),lw=64,lh=64;low.width=lw;low.height=lh;const lctx=low.getContext('2d');lctx.imageSmoothingEnabled=false;lctx.fillStyle='#081a37';lctx.fillRect(0,0,lw,lh);const scale=Math.min(lw/agenticIdentity.naturalWidth,lh/agenticIdentity.naturalHeight),dw=agenticIdentity.naturalWidth*scale,dh=agenticIdentity.naturalHeight*scale;lctx.drawImage(agenticIdentity,0,0,agenticIdentity.naturalWidth,agenticIdentity.naturalHeight,(lw-dw)/2,(lh-dh)/2,dw,dh);ctx.imageSmoothingEnabled=false;ctx.drawImage(low,0,0,lw,lh,0,0,w,h);return;}const cellW=identityAtlas.naturalWidth/3,cellH=identityAtlas.naturalHeight/3;ctx.drawImage(identityAtlas,(id%3)*cellW,Math.floor(id/3)*cellH,cellW,cellH,0,0,w,h);}
 const originalDrawAll=drawAll;
 drawAll=function(){originalDrawAll();document.querySelectorAll('[data-identity]').forEach(c=>{const ctx=c.getContext('2d');if(ctx)drawIdentity(ctx,Number(c.dataset.identity),c.width,c.height);});};
 const originalResultHTML=resultHTML;
